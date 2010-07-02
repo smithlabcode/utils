@@ -293,7 +293,8 @@ main(int argc, const char **argv) {
   
     bool VERBOSE = false;
     bool BISULFITE = false;
-  
+    bool AG_WILDCARD = false;
+    
     /****************** COMMAND LINE OPTIONS ********************/
     OptionParser opt_parse("deadzones", "program for finding deadzones",
 			   "<1-or-more-FASTA-chrom-files>");
@@ -303,6 +304,8 @@ main(int argc, const char **argv) {
     opt_parse.add_opt("prefix", 'p', "prefix length", true, prefix_len);
     opt_parse.add_opt("bisulfite", 'B', "get bisulfite deadzones", 
 		      false, BISULFITE);
+    opt_parse.add_opt("ag-wild", 'A', "A/G wildcard for bisulfite", 
+		      false, AG_WILDCARD);
     opt_parse.add_opt("suffix", 's', "suffix of FASTA files "
 		      "(assumes -c indicates dir)", false , fasta_suffix);
     opt_parse.add_opt("verbose", 'v', "print more run information", 
@@ -358,9 +361,13 @@ main(int argc, const char **argv) {
       cerr << "[PREPARING CONCATENATED SEQUENCE]" << endl;
     append_revcomp(long_seq);
     
-    if (BISULFITE)
-      replace(long_seq.begin(), long_seq.end(), 'C', 'T');
-    
+    if (BISULFITE) {
+      if (AG_WILDCARD)
+	replace(long_seq.begin(), long_seq.end(), 'G', 'A');
+      else 
+	replace(long_seq.begin(), long_seq.end(), 'C', 'T');
+    }
+
     if (VERBOSE)
       cerr << "[IDENTIFYING AMBIGUOUS INDEXES]" << endl;
     vector<size_t> ambigs;
