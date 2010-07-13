@@ -25,6 +25,9 @@
 #include <numeric>
 #include <cmath>
 
+#include <tr1/unordered_map>
+using std::tr1::unordered_map; 
+
 using std::string;
 using std::vector;
 using std::cout;
@@ -57,13 +60,15 @@ lexico_equal(In first, In last, In first2) {
 
 static void
 sort_index(const bool VERBOSE, const size_t kmer, const string &prefix,
-	   const string &seq, vector<size_t> &ambigs) {
+	   const string &seq, vector<size_t> &ambigs,
+           const unordered_map<size_t, size_t> &invalid_pool) { 
   
   if (VERBOSE) cerr << "[BUILDING INDEX] ";
   vector<size_t> index;
   const string::const_iterator lim(seq.end() - kmer + 1);
   for (string::const_iterator j = seq.begin(); j != lim; ++j)
-    if (lexico_equal(prefix.begin(), prefix.end(), j))
+    if (lexico_equal(prefix.begin(), prefix.end(), j)) &&
+       (!(invalid_pool.find(j - seq.begin()) != invalid_pool.end()))
       index.push_back(j - seq.begin());
   
   if (!index.empty()) {
@@ -99,7 +104,8 @@ sort_index(const bool VERBOSE, const size_t kmer, const string &prefix,
 static void
 sort_index(const bool VERBOSE, const bool BISULFITE,
 	   const size_t kmer, const size_t prefix_len,
-	   const string &seq, vector<size_t> &ambigs) {
+	   const string &seq, vector<size_t> &ambigs,
+           const unordered_map<size_t, size_t> &invalid_pool) {
 
   static const float DENOM = CLOCKS_PER_SEC;
 
@@ -110,7 +116,7 @@ sort_index(const bool VERBOSE, const bool BISULFITE,
     if (!BISULFITE || prefix.find('C') == string::npos) {
       const clock_t start(clock());
       if (VERBOSE) cerr << "[PREFIX=" << prefix << "] ";
-      sort_index(VERBOSE, kmer, prefix, seq, ambigs);
+      sort_index(VERBOSE, kmer, prefix, seq, ambigs, invalid_pool);
       const clock_t end(clock());
       if (VERBOSE)
 	cerr << "[" << (end - start)/DENOM << " SEC] [DONE]" << endl;
@@ -369,9 +375,20 @@ main(int argc, const char **argv) {
     }
 
     if (VERBOSE)
+      cerr << "[PREPARING INVALID INDEXES]" << endl;
+    unordered_map<size_t, size_t> invalid_pool; 
+    size_t max = seqoffsets[seqoffsets.size()-1]; 
+    for (size_t i = 0; i < seqoffsets.size(); i++) 
+     { for (size_t j=seqoffsets[i]-kmer+1; j<=seqoffsets[i]-1; j++)
+          invalid_pool[j] = 1; 
+       for (size_t j=max+(max-seqoffsets[i])-kmer+1; j<=max+(max-seqoffsets[i]-1); j++)
+          invalid_pool[j] = 1; 
+     }
+
+    if (VERBOSE)
       cerr << "[IDENTIFYING AMBIGUOUS INDEXES]" << endl;
     vector<size_t> ambigs;
-    sort_index(VERBOSE, BISULFITE, kmer, prefix_len, long_seq, ambigs);
+    sort_index(VERBOSE, BISULFITE, kmer, prefix_len, long_seq, ambigs, invalid_pool);
     long_seq.clear();
     
     if (ambigs.empty()) {
