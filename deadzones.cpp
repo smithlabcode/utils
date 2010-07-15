@@ -67,8 +67,8 @@ sort_index(const bool VERBOSE, const size_t kmer, const string &prefix,
   vector<size_t> index;
   const string::const_iterator lim(seq.end() - kmer + 1);
   for (string::const_iterator j = seq.begin(); j != lim; ++j)
-    if (lexico_equal(prefix.begin(), prefix.end(), j)) &&
-       (!(invalid_pool.find(j - seq.begin()) != invalid_pool.end()))
+    if ((lexico_equal(prefix.begin(), prefix.end(), j)) &&
+       (!(invalid_pool.find(j - seq.begin()) != invalid_pool.end())))
       index.push_back(j - seq.begin());
   
   if (!index.empty()) {
