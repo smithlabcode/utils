@@ -103,6 +103,7 @@ sort_index(const bool VERBOSE, const size_t kmer, const string &prefix,
 
 static void
 sort_index(const bool VERBOSE, const bool BISULFITE,
+	   const bool AG_WILDCARD,
 	   const size_t kmer, const size_t prefix_len,
 	   const string &seq, vector<size_t> &ambigs,
            const unordered_map<size_t, size_t> &invalid_pool) {
@@ -113,7 +114,9 @@ sort_index(const bool VERBOSE, const bool BISULFITE,
     static_cast<size_t>(pow(rmap::alphabet_size, prefix_len));
   for (size_t i = 0; i < n_prefix; ++i) {
     const string prefix(i2mer(prefix_len, i));
-    if (!BISULFITE || prefix.find('C') == string::npos) {
+    if (!BISULFITE || 
+	((!AG_WILDCARD && prefix.find('C') == string::npos) ||
+	 (AG_WILDCARD && prefix.find('G') == string::npos))) {
       const clock_t start(clock());
       if (VERBOSE) cerr << "[PREFIX=" << prefix << "] ";
       sort_index(VERBOSE, kmer, prefix, seq, ambigs, invalid_pool);
@@ -388,7 +391,7 @@ main(int argc, const char **argv) {
     if (VERBOSE)
       cerr << "[IDENTIFYING AMBIGUOUS INDEXES]" << endl;
     vector<size_t> ambigs;
-    sort_index(VERBOSE, BISULFITE, kmer, prefix_len, long_seq, ambigs, invalid_pool);
+    sort_index(VERBOSE, BISULFITE, AG_WILDCARD, kmer, prefix_len, long_seq, ambigs, invalid_pool);
     long_seq.clear();
     
     if (ambigs.empty()) {
