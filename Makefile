@@ -24,7 +24,8 @@ ifndef RMAP
 $(error RMAP variable undefined)
 endif
 
-PROGS = sortbed bedoverlap mapsifter extractseq deadzones binreads
+PROGS = sortbed bedoverlap mapsifter extractseq deadzones \
+	binreads sigoverlap
 
 LIBS =
 LIBDIR = $(RMAP)/lib
