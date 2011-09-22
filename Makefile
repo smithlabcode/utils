@@ -20,8 +20,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ifndef RMAP
-$(error RMAP variable undefined)
+ifndef SRC_ROOT
+SRC_ROOT=../../
 endif
 
 PROGS = sortbed bedoverlap mapsifter extractseq deadzones \
@@ -31,8 +31,8 @@ CXX = g++
 CFLAGS = -Wall -fPIC -fmessage-length=50
 OPTFLAGS = -O2
 DEBUGFLAGS = -g
-COMMON_DIR = $(RMAP)/src/smithlab_cpp/
-TEST_DIR = $(RMAP)/test
+SMITHLAB_CPP = ../smithlab_cpp/
+TEST_DIR = $(SRC_ROOT)/test
 
 ifeq "$(shell uname)" "Darwin"
 CFLAGS += -arch x86_64
@@ -52,15 +52,15 @@ all:	$(PROGS)
 	$(CXX) $(CFLAGS) -c -o $@ $<
 
 $(PROGS): \
-	$(addprefix $(COMMON_DIR), GenomicRegion.o rmap_os.o \
-	rmap_utils.o OptionParser.o)
+	$(addprefix $(SMITHLAB_CPP)/, GenomicRegion.o smithlab_os.o \
+	smithlab_utils.o OptionParser.o)
 
 install: all
-	@mkdir -p $(RMAP)/bin
-	@install -m 755 $(PROGS) $(RMAP)/bin
+	@mkdir -p $(SRC_ROOT)/bin
+	@install -m 755 $(PROGS) $(SRC_ROOT)/bin
 
 %: %.cpp
-	$(CXX) $(CFLAGS) -o $@ $^ -I$(COMMON_DIR) $(LIBS)
+	$(CXX) $(CFLAGS) -o $@ $^ -I$(SMITHLAB_CPP) $(LIBS)
 
 test_%:	%
 	@$(TEST_DIR)/$@ $(TEST_DIR)

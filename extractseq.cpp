@@ -27,8 +27,8 @@
 #include <fstream>
 
 #include "OptionParser.hpp"
-#include "rmap_utils.hpp"
-#include "rmap_os.hpp"
+#include "smithlab_utils.hpp"
+#include "smithlab_os.hpp"
 #include "GenomicRegion.hpp"
 
 using std::string;
@@ -96,7 +96,7 @@ main(int argc, const char **argv) {
 	   << region_sequences[i] << endl;
     if (out != &cout) delete out;
   }
-  catch (const RMAPException &e) {
+  catch (const SMITHLABException &e) {
     cerr << e.what() << endl;
     return EXIT_FAILURE;
   }

@@ -18,8 +18,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "rmap_utils.hpp"
-#include "rmap_os.hpp"
+#include "smithlab_utils.hpp"
+#include "smithlab_os.hpp"
 #include "OptionParser.hpp"
 
 #include <numeric>
@@ -111,7 +111,7 @@ sort_index(const bool VERBOSE, const bool BISULFITE,
   static const float DENOM = CLOCKS_PER_SEC;
 
   const size_t n_prefix = 
-    static_cast<size_t>(pow(rmap::alphabet_size, prefix_len));
+    static_cast<size_t>(pow(smithlab::alphabet_size, prefix_len));
   for (size_t i = 0; i < n_prefix; ++i) {
     const string prefix(i2mer(prefix_len, i));
     if (!BISULFITE || 
@@ -351,7 +351,7 @@ main(int argc, const char **argv) {
       cerr << "[READING SEQUENCE FILES]" << endl;
     for (size_t i = 0; i < seqfiles.size(); ++i) {
       if (isdir(seqfiles[i].c_str()))
-	throw RMAPException("\"" + seqfiles[i] + 
+	throw SMITHLABException("\"" + seqfiles[i] + 
 			    "\" not a FASTA format sequence file?");
       vector<string> names, sequences;
       read_fasta_file(seqfiles[i].c_str(), names, sequences);
@@ -410,7 +410,7 @@ main(int argc, const char **argv) {
       }
     }
   }
-  catch (RMAPException &e) {
+  catch (SMITHLABException &e) {
     cerr << "ERROR: " << e.what() << endl;
     return EXIT_FAILURE;
   }

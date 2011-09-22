@@ -22,7 +22,7 @@
 #include <fstream>
 
 #include "OptionParser.hpp"
-#include "rmap_utils.hpp"
+#include "smithlab_utils.hpp"
 #include "GenomicRegion.hpp"
 
 using std::ofstream;
@@ -125,7 +125,7 @@ main(int argc, const char **argv) {
     }
     if (out != &cout) delete out;
   }
-  catch (RMAPException &e) {
+  catch (SMITHLABException &e) {
     cerr << "ERROR:\t" << e.what() << endl;
     return EXIT_FAILURE;
   }
