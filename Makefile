@@ -24,7 +24,7 @@ ifndef SRC_ROOT
 SRC_ROOT=../../
 endif
 
-PROGS = sortbed bedoverlap mapsifter extractseq deadzones \
+PROGS = bedoverlap mapsifter extractseq deadzones \
 	binreads sigoverlap
 
 CXX = g++
