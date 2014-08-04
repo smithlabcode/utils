@@ -19,7 +19,7 @@
  */
 
 #include "smithlab_utils.hpp"
-#include "smithlab_os.hpp"
+#include "GenomicRegion.hpp"
 #include "OptionParser.hpp"
 
 #include <numeric>
