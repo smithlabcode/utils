@@ -34,7 +34,7 @@ using std::endl;
 using std::cerr;
 using std::numeric_limits;
 
-using std::tr1::unordered_map;
+using std::unordered_map;
 
 
 template <class T> 

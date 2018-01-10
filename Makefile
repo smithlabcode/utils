@@ -28,7 +28,7 @@ PROGS = bedoverlap mapsifter extractseq deadzones \
 	binreads sigoverlap
 
 CXX = g++
-CFLAGS = -Wall -fPIC -fmessage-length=50
+CFLAGS = -Wall -fPIC -fmessage-length=50 -std=c++11
 OPTFLAGS = -O2
 DEBUGFLAGS = -g
 SMITHLAB_CPP = ../smithlab_cpp/
