@@ -23,7 +23,6 @@
 ifndef SRC_ROOT
 SRC_ROOT=../../
 endif
-
 PROGS = bedoverlap mapsifter extractseq deadzones \
 	binreads sigoverlap
 
@@ -40,6 +39,12 @@ ifeq "$(shell if [ `sysctl -n kern.osrelease | cut -d . -f 1` -ge 13 ];\
               then echo 'true'; fi)" "true"
 CFLAGS += -stdlib=libstdc++
 endif
+endif
+
+ifdef PARALLEL
+	ifeq "$(PARALLEL)" "1"
+		CFLAGS += -fopenmp
+	endif
 endif
 
 ifdef DEBUG
