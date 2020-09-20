@@ -30,6 +30,7 @@
 #include "smithlab_utils.hpp"
 #include "smithlab_os.hpp"
 #include "GenomicRegion.hpp"
+#include "chromosome_utils.hpp"
 
 using std::string;
 using std::vector;
@@ -38,25 +39,25 @@ using std::cerr;
 using std::endl;
 using std::ifstream;
 
-int 
+int
 main(int argc, const char **argv) {
 
   try {
-    
+
     bool VERBOSE = false;
-    
+
     string chrom_dir;
     string outfile;
-    
+
     /****************** COMMAND LINE OPTIONS ********************/
     OptionParser opt_parse("extractseq", "program to extract sequence regions from "
-			   "chromosome files corresponding to genomic intervals "
-			   "specified in a BED file",
-			   "<bed-format-regions>");
-    opt_parse.add_opt("output", 'o', "Name of output file (default: stdout)", 
-		      false, outfile);
-    opt_parse.add_opt("chrom", 'c', "directory with chrom files (FASTA format)", 
-		      true , chrom_dir);
+         "chromosome files corresponding to genomic intervals "
+         "specified in a BED file",
+         "<bed-format-regions>");
+    opt_parse.add_opt("output", 'o', "Name of output file (default: stdout)",
+          false, outfile);
+    opt_parse.add_opt("chrom", 'c', "directory with chrom files (FASTA format)",
+          true , chrom_dir);
     opt_parse.add_opt("verbose", 'v', "print more run info", false, VERBOSE);
     vector<string> leftover_args;
     opt_parse.parse(argc, argv, leftover_args);
@@ -78,22 +79,22 @@ main(int argc, const char **argv) {
     }
     const string regions_file = leftover_args.front();
     /****************** END COMMAND LINE OPTIONS *****************/
-    
+
     if (VERBOSE)
       cerr << "loading regions" << endl;
     vector<GenomicRegion> regions;
     ReadBEDFile(regions_file, regions);
-    
+
     if (VERBOSE)
       cerr << "extracting reference sequences" << endl;
     vector<string> region_sequences;
     extract_regions_fasta(chrom_dir, regions, region_sequences);
-    
-    std::ostream *out = (outfile.empty()) ? &cout : 
+
+    std::ostream *out = (outfile.empty()) ? &cout :
       new std::ofstream(outfile.c_str());
     for (size_t i = 0; i < region_sequences.size(); ++i)
       *out << ">" << assemble_region_name(regions[i]) << endl
-	   << region_sequences[i] << endl;
+     << region_sequences[i] << endl;
     if (out != &cout) delete out;
   }
   catch (const SMITHLABException &e) {

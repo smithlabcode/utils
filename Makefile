@@ -62,7 +62,7 @@ all:	$(PROGS)
 
 $(PROGS): \
 	$(addprefix $(SMITHLAB_CPP)/, GenomicRegion.o smithlab_os.o \
-	smithlab_utils.o OptionParser.o)
+	chromosome_utils.o smithlab_utils.o OptionParser.o)
 
 install: all
 	@mkdir -p $(SRC_ROOT)/bin
